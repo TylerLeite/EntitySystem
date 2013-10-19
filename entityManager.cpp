@@ -107,6 +107,9 @@ list<component*> entityManager::getAllComponentsOnEntity(const unsigned& pEntity
 }
 
 void entityManager::addComponent(const unsigned& pEntity, component* pComponent){
+    if (frozen)
+        return;
+        
     if (!hasComponent(pEntity, pComponent->getName())){
       // Insert the pComponent and its name into componetnStores at pEntity
         pair<string, component*> stringCompPair(pComponent->getName(), pComponent);
@@ -118,6 +121,9 @@ void entityManager::addComponent(const unsigned& pEntity, component* pComponent)
 
 
 void entityManager::removeComponent(const unsigned& pEntity, component* pComponent){
+    if (frozen)
+        return;
+        
     if (hasComponent(pEntity, pComponent->getName())){
       // Remove the componentStores entry for pComponent and free memory
         componentStores[pEntity].erase(pComponent->getName());
@@ -127,6 +133,9 @@ void entityManager::removeComponent(const unsigned& pEntity, component* pCompone
 }
 
 void entityManager::removeComponent(const unsigned& pEntity, const string& pCompName){
+    if (frozen)
+        return;
+    
   // Convenience function, just calls the other removeComponent
     if (hasComponent(pEntity, pCompName)){
         component* Component = componentStores[pEntity][pCompName];
@@ -154,6 +163,8 @@ bool entityManager::hasComponents(const unsigned& pEntity, list<string>& pCompNa
 }
 
 void entityManager::killEntity(const unsigned& pEntity){
+    if (frozen)
+        return;
   // Delete pEntity's entry in componentStores and allEntity's, free its components' memory
     if (hasEntity(pEntity)){
         map<string, component*>::iterator mapIt = componentStores[pEntity].begin();
